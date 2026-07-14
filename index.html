@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>驭眼运维 - 合作方运维任务小程序</title>
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --primary-dark: #1d4ed8;
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --border: #e8ecf1;
+  --success: #22c55e;
+  --success-light: #dcfce7;
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --gray-bg: #f3f4f6;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 50%, #e8f0fe 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 20px;
+  color: var(--text);
+}
+.page-wrapper {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+}
+/* Left Panel */
+.side-panel {
+  width: 320px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 30px;
+}
+.side-panel h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.side-panel .subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.side-panel .logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.side-panel .logo-icon {
+  width: 42px; height: 42px;
+  background: var(--primary);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px; font-weight: 700;
+}
+.nav-list { list-style: none; }
+.nav-list li {
+  padding: 14px 16px;
+  background: var(--card);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all .2s;
+  box-shadow: var(--shadow);
+}
+.nav-list li:hover { border-color: var(--primary); }
+.nav-list li.active { border-color: var(--primary); background: var(--primary-light); }
+.nav-list li .nav-tab-num {
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.nav-list li .nav-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.nav-list li .nav-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+/* Phone Frame */
+.phone-container { flex-shrink: 0; }
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  background: #000;
+  border-radius: 50px;
+  padding: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 0 0 2px #333;
+  position: relative;
+}
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  border-radius: 40px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+/* Status Bar */
+.phone-status-bar {
+  height: 54px;
+  background: var(--card);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  position: relative;
+  flex-shrink: 0;
+}
+.phone-status-bar .notch {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 150px; height: 30px;
+  background: #000;
+  border-radius: 0 0 20px 20px;
+}
+.phone-status-bar .status-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+/* Content Area */
+.tab-content-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+.tab-content-area::-webkit-scrollbar { display: none; }
+.tab-page {
+  display: none;
+  min-height: 100%;
+  padding-bottom: 20px;
+}
+.tab-page.active { display: block; }
+/* Bottom Tab Bar */
+.tab-bar {
+  height: 80px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 8px;
+  flex-shrink: 0;
+}
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: color .2s;
+}
+.tab-bar-item .tab-icon { font-size: 22px; }
+.tab-bar-item .tab-label { font-size: 10px; font-weight: 500; }
+.tab-bar-item.active { color: var(--primary); }
+
+/* ===================== */
+/* TAB 1: 考勤打卡        */
+/* ===================== */
+.attendance-page { padding: 16px; }
+.att-time-block {
+  text-align: center;
+  padding: 24px 0 16px;
+}
+.att-time-block .time-display {
+  font-size: 56px;
+  font-weight: 200;
+  color: var(--text);
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.att-time-block .date-display {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.att-type-switch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.att-type-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  transition: all .2s;
+}
+.att-type-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.location-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.location-card .loc-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.location-card .loc-address {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.location-card .reloc-btn {
+  font-size: 12px;
+  color: var(--primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.camera-section {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.camera-btn {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 3px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 32px;
+  transition: all .2s;
+  color: var(--text-secondary);
+}
+.camera-btn:hover { border-color: var(--primary); color: var(--primary); }
+.camera-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 8px;
+}
+.photo-preview {
+  display: none;
+  margin-top: 10px;
+}
+.photo-preview.show { display: block; }
+.photo-preview .photo-thumb {
+  width: 200px; height: 140px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  position: relative;
+  overflow: hidden;
+}
+.photo-preview .photo-thumb::after {
+  content: '📷 现场照片';
+  font-size: 14px;
+}
+.photo-preview .retake-btn {
+  font-size: 12px;
+  color: var(--danger);
+  cursor: pointer;
+  margin-top: 6px;
+  display: inline-block;
+}
+.clockin-btn-wrap {
+  text-align: center;
+  margin: 20px 0;
+}
+.clockin-btn {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(37,99,235,0.4);
+  transition: all .2s;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.clockin-btn:active { transform: scale(0.95); }
+.clockin-btn .clock-icon { font-size: 28px; }
+.clockin-btn.done {
+  background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
+  box-shadow: 0 6px 24px rgba(34,197,94,0.4);
+}
+.att-records {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+}
+.att-records h4 {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.att-record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.att-record-item:last-child { border-bottom: none; }
+.att-record-item .rec-label { font-size: 14px; color: var(--text); }
+.att-record-item .rec-value { font-size: 14px; }
+.att-record-item .rec-value.done { color: var(--success); font-weight: 500; }
+.att-record-item .rec-value.pending { color: var(--text-tertiary); }
+.offline-bar {
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.offline-bar.online { background: var(--success-light); color: #15803d; }
+.offline-bar.weak { background: var(--warning-light); color: #92400e; }
+
+/* ===================== */
+/* TAB 2: 日报提交        */
+/* ===================== */
+.daily-page { padding: 0 0 20px; }
+.daily-header {
+  background: var(--card);
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.daily-header h2 { font-size: 17px; font-weight: 600; }
+.weak-net-banner {
+  background: var(--warning-light);
+  color: #92400e;
+  padding: 10px 16px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.weak-net-banner.hidden { display: none; }
+.form-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  margin: 12px 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.form-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.form-row {
+  margin-bottom: 14px;
+}
+.form-row:last-child { margin-bottom: 0; }
+.form-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.form-label .auto-tag {
+  font-size: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--card);
+  outline: none;
+  transition: border-color .2s;
+  font-family: inherit;
+}
+.form-input:focus { border-color: var(--primary); }
+.form-input.auto { background: var(--gray-bg); }
+.form-input.readonly { background: var(--gray-bg); color: var(--text-secondary); }
+textarea.form-input { resize: none; min-height: 60px; }
+.radio-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.radio-item {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text-secondary);
+}
+.radio-item.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 500;
+}
+.number-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.number-input-wrap .num-btn {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: background .15s;
+}
+.number-input-wrap .num-btn:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.number-input-wrap .num-btn:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.number-input-wrap .num-btn:active { background: var(--gray-bg); }
+.number-input-wrap .num-val {
+  width: 60px; height: 36px;
+  border: 1px solid var(--border);
+  border-left: none; border-right: none;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  outline: none;
+}
+.att-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.att-info-row:last-child { border-bottom: none; }
+.att-info-label { font-size: 13px; color: var(--text-secondary); }
+.att-info-value { font-size: 14px; font-weight: 500; color: var(--text); }
+.att-info-value.warn { color: var(--warning); font-weight: 400; font-size: 12px; }
+.att-info-value.calc { color: var(--primary); }
+.daily-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+}
+.btn-draft {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-draft:active { background: var(--gray-bg); }
+.btn-submit {
+  flex: 2;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-submit:active { background: var(--primary-dark); }
+
+/* ===================== */
+/* TAB 4: 我的 */
+.profile-header {
+  text-align: center;
+  padding: 24px 16px 16px;
+  background: linear-gradient(135deg, var(--primary), #1d4ed8);
+  color: #fff;
+  border-radius: 0 0 20px 20px;
+  margin-bottom: 12px;
+}
+.profile-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  border: 3px solid rgba(255,255,255,0.4);
+}
+.profile-name { font-size: 18px; font-weight: 600; }
+.profile-role { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+.profile-card {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  margin: 0 12px 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+}
+.profile-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.profile-row:last-child { border-bottom: none; }
+.profile-row-label { color: var(--text-secondary); }
+.profile-row-value { color: var(--text); font-weight: 500; }
+
+.profile-action {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin: 0 12px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.profile-action:active { background: var(--bg); }
+.profile-action-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  margin-right: 12px;
+}
+.profile-action-text { flex: 1; font-size: 14px; color: var(--text); }
+.profile-action-arrow { color: var(--text-light); font-size: 12px; }
+
+.member-card {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.member-card:last-child { border-bottom: none; }
+.member-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--primary-light, #dbeafe);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--primary);
+  margin-right: 10px;
+  font-weight: 600;
+}
+.member-info { flex: 1; }
+.member-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.member-meta { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+.member-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.member-tag.leader { background: #dbeafe; color: #2563eb; }
+.member-tag.online { background: #dcfce7; color: #16a34a; }
+
+/* TAB 3: 外包订单        */
+/* ===================== */
+.orders-page { padding: 0 0 20px; }
+.orders-header {
+  background: var(--card);
+  padding: 16px 16px 0;
+}
+.orders-header h2 { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
+.order-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+.order-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: color .2s;
+}
+.order-tab.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+.order-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.order-tab .badge {
+  display: inline-block;
+  min-width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  border-radius: 9px;
+  margin-left: 3px;
+  padding: 0 4px;
+  vertical-align: middle;
+}
+.order-list { padding: 12px 16px; }
+.order-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.order-card:active { transform: scale(0.98); }
+.order-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.order-code { font-size: 12px; color: var(--text-tertiary); font-weight: 500; }
+.order-status {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.order-status.pending { background: var(--warning-light); color: #92400e; }
+.order-status.accepted { background: var(--success-light); color: #15803d; }
+.order-status.rejected { background: var(--gray-bg); color: var(--text-tertiary); }
+.order-item-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.order-item-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.order-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.order-info-cell {
+  font-size: 12px;
+}
+.order-info-cell .cell-label { color: var(--text-tertiary); }
+.order-info-cell .cell-value { color: var(--text); font-weight: 500; margin-top: 2px; }
+.order-dispatch-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+.order-action-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+}
+.order-action-btn.primary {
+  background: var(--primary);
+  color: #fff;
+}
+.order-action-btn.primary:active { background: var(--primary-dark); }
+.order-action-btn.secondary {
+  background: var(--card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.order-detail-extra {
+  display: none;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.order-detail-extra.show { display: block; }
+.order-detail-extra .detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.order-detail-extra .detail-row .dl { color: var(--text-tertiary); }
+.order-detail-extra .detail-row .dv { color: var(--text); }
+
+/* ===================== */
+/* Modal / Overlay        */
+/* ===================== */
+.modal-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-panel {
+  background: var(--card);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  width: 100%;
+  max-height: 85%;
+  padding: 20px 16px 30px;
+  animation: slideUp .3s ease;
+  overflow-y: auto;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-panel h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.modal-panel .modal-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.modal-switch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.modal-switch-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text-secondary);
+}
+.modal-switch-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.modal-switch-btn.active-reject {
+  border-color: var(--text-tertiary);
+  background: var(--gray-bg);
+  color: var(--text-secondary);
+}
+.modal-extra-fields {
+  display: none;
+  margin-bottom: 16px;
+}
+.modal-extra-fields.show { display: block; }
+.modal-submit-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.modal-submit-btn:active { background: var(--primary-dark); }
+.modal-close {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+/* Success Toast */
+.success-toast {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 24px 32px;
+  border-radius: var(--radius);
+  text-align: center;
+  z-index: 200;
+  opacity: 0;
+  transition: all .3s;
+  pointer-events: none;
+}
+.success-toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.success-toast .toast-icon { font-size: 40px; margin-bottom: 8px; }
+.success-toast .toast-text { font-size: 14px; }
+
+/* draft toast */
+.draft-toast {
+  position: absolute;
+  bottom: 90px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.draft-toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+  <!-- Left Side Panel -->
+  <div class="side-panel">
+    <div class="logo-row">
+      <div class="logo-icon">驭</div>
+      <div>
+        <h1>驭眼运维</h1>
+        <div style="font-size:12px;color:var(--text-secondary);">合作方运维任务小程序</div>
+      </div>
+    </div>
+    <p class="subtitle">面向风电运维合作方（乙方）的手机端小程序，支持考勤打卡、日报提交、外包订单响应、个人中心等核心操作。针对风场信号差的场景，提供离线暂存等友好提示。</p>
+    <ul class="nav-list">
+      <li class="active" data-tab="0">
+        <div class="nav-tab-num">Tab 1 · 页面3-1</div>
+        <div class="nav-title">📋 考勤打卡</div>
+        <div class="nav-desc">GPS定位+现场拍照+打卡记录，支持离线暂存</div>
+      </li>
+      <li data-tab="1">
+        <div class="nav-tab-num">Tab 2 · 页面3-2</div>
+        <div class="nav-title">📝 日报提交</div>
+        <div class="nav-desc">自动填充+手动填写，弱网下保存草稿</div>
+      </li>
+      <li data-tab="2">
+        <div class="nav-tab-num">Tab 3 · 页面3-3</div>
+        <div class="nav-title">📦 外包订单</div>
+        <div class="nav-desc">订单列表+状态筛选+响应弹框</div>
+      </li>
+      <li data-tab="3">
+        <div class="nav-tab-num">Tab 4 · 页面3-4</div>
+        <div class="nav-title">👤 我的</div>
+        <div class="nav-desc">个人信息+我的团队+成员+修改密码</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Phone Frame -->
+  <div class="phone-container">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <!-- Status Bar -->
+        <div class="phone-status-bar">
+          <div class="notch"></div>
+          <span class="status-text">驭眼运维</span>
+        </div>
+
+        <!-- Tab Content Area -->
+        <div class="tab-content-area">
+
+          <!-- ========== TAB 1: 考勤打卡 ========== -->
+          <div class="tab-page active" id="page-attendance">
+            <div class="attendance-page">
+              <div class="att-time-block">
+                <div class="time-display" id="liveTime">08:00:00</div>
+                <div class="date-display" id="liveDate">2026年07月14日 星期二</div>
+              </div>
+
+              <div class="att-type-switch">
+                <div class="att-type-btn active" data-type="start">上班打卡</div>
+                <div class="att-type-btn" data-type="end">下班打卡</div>
+              </div>
+
+              <div class="location-card">
+                <div class="loc-label">📍 当前位置</div>
+                <div class="loc-address">江苏省盐城市大丰区华东海上风电场A</div>
+                <div class="reloc-btn" id="relocBtn">🔄 重新定位</div>
+              </div>
+
+              <div class="camera-section">
+                <div class="camera-btn" id="cameraBtn">📷</div>
+                <div class="camera-hint">现场拍照作为考勤凭证</div>
+                <div class="photo-preview" id="photoPreview">
+                  <div class="photo-thumb"></div>
+                  <div><span class="retake-btn" id="retakeBtn">✕ 删除重拍</span></div>
+                </div>
+              </div>
+
+              <div class="clockin-btn-wrap">
+                <button class="clockin-btn" id="clockinBtn">
+                  <span class="clock-icon">✓</span>
+                  <span id="clockinLabel">打卡</span>
+                </button>
+              </div>
+
+              <div class="att-records">
+                <h4>今日打卡记录</h4>
+                <div class="att-record-item">
+                  <span class="rec-label">上班打卡</span>
+                  <span class="rec-value pending" id="recStart">--:-- 未打卡</span>
+                </div>
+                <div class="att-record-item">
+                  <span class="rec-label">下班打卡</span>
+                  <span class="rec-value pending" id="recEnd">--:-- 未打卡</span>
+                </div>
+              </div>
+
+              <div class="offline-bar online" id="netBar">
+                <span>🟢</span> 网络正常，数据实时同步
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== TAB 2: 日报提交 ========== -->
+          <div class="tab-page" id="page-daily">
+            <div class="daily-page">
+              <div class="daily-header">
+                <h2>📝 日报提交</h2>
+              </div>
+              <div class="weak-net-banner" id="weakNetBanner">
+                <span>📶</span> 当前网络信号较弱，建议先保存草稿，信号恢复后再提交
+                <span style="margin-left:auto;font-size:10px;">点击收起 ✕</span>
+              </div>
+
+              <!-- Card 1: 基本信息 -->
+              <div class="form-card">
+                <div class="form-card-title">基本信息</div>
+                <div class="form-row">
+                  <div class="form-label">出勤日期 <span class="auto-tag">🤖 自动获取</span></div>
+                  <input class="form-input auto" type="text" value="2026-07-14">
+                </div>
+                <div class="form-row">
+                  <div class="form-label">产品编号 <span class="auto-tag">🤖 关联任务</span></div>
+                  <input class="form-input auto" type="text" value="CP-002">
+                </div>
+                <div class="form-row">
+                  <div class="form-label">团队任务 <span class="auto-tag">🤖 自动带出</span></div>
+                  <input class="form-input readonly" type="text" value="年度巡检" readonly>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">班组长 <span class="auto-tag">🤖 自动获取</span></div>
+                  <input class="form-input readonly" type="text" value="张伟" readonly>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">出勤类型 ✏️ 用户选择</div>
+                  <div class="radio-group" id="attendanceType">
+                    <div class="radio-item active">正常出勤</div>
+                    <div class="radio-item">加班</div>
+                    <div class="radio-item">调班</div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">天气 <span class="auto-tag">🤖 GPS获取</span></div>
+                  <input class="form-input auto" type="text" value="晴">
+                </div>
+              </div>
+
+              <!-- Card 2: 工作内容 -->
+              <div class="form-card">
+                <div class="form-card-title">工作内容</div>
+                <div class="form-row">
+                  <div class="form-label">今日计划</div>
+                  <textarea class="form-input" placeholder="请输入今日工作计划..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">完成数量</div>
+                  <input class="form-input" type="text" inputmode="decimal" placeholder="如：3.5，支持小数点后1位">
+                </div>
+                <div class="form-row">
+                  <div class="form-label">生产情况说明</div>
+                  <textarea class="form-input" placeholder="请描述生产情况..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">明日计划</div>
+                  <textarea class="form-input" placeholder="请输入明日工作计划..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">备注</div>
+                  <input class="form-input" type="text" placeholder="补充说明（选填）">
+                </div>
+              </div>
+
+              <!-- Card 3: 考勤信息 -->
+              <div class="form-card">
+                <div class="form-card-title">考勤信息 <span class="auto-tag">🤖 自动关联</span></div>
+                <div class="att-info-row">
+                  <span class="att-info-label">上班打卡时间</span>
+                  <span class="att-info-value" id="dailyStart">08:02</span>
+                </div>
+                <div class="att-info-row">
+                  <span class="att-info-label">下班打卡时间</span>
+                  <span class="att-info-value warn" id="dailyEnd">请先完成下班打卡</span>
+                </div>
+                <div class="att-info-row">
+                  <span class="att-info-label">工时计算</span>
+                  <span class="att-info-value calc" id="dailyHours">--</span>
+                </div>
+              </div>
+
+              <div class="daily-actions">
+                <button class="btn-draft" id="btnDraft">保存草稿</button>
+                <button class="btn-submit" id="btnSubmit">提交日报</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== TAB 3: 外包订单 ========== -->
+          <div class="tab-page" id="page-orders">
+            <div class="orders-page">
+              <div class="orders-header">
+                <h2>📦 外包订单</h2>
+                <div class="order-tabs">
+                  <div class="order-tab active" data-filter="pending">待响应 <span class="badge">3</span></div>
+                  <div class="order-tab" data-filter="responded">已响应 <span class="badge" style="background:var(--success);">2</span></div>
+                  <div class="order-tab" data-filter="all">全部 <span class="badge" style="background:var(--text-tertiary);">5</span></div>
+                </div>
+              </div>
+              <div class="order-list" id="orderList">
+                <!-- orders injected by JS -->
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ========== TAB 4: 我的 ========== -->
+          <div class="tab-page" id="page-profile">
+            <!-- Profile Header -->
+            <div class="profile-header">
+              <div class="profile-avatar">👤</div>
+              <div class="profile-name">刘洋</div>
+              <div class="profile-role">华东运维一组 · 运维工程师</div>
+            </div>
+
+            <!-- 个人信息 -->
+            <div class="profile-card">
+              <div class="profile-card-title">📋 个人信息</div>
+              <div class="profile-row">
+                <span class="profile-row-label">姓名</span>
+                <span class="profile-row-value">刘洋</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">手机号</span>
+                <span class="profile-row-value">137****6789</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">性别</span>
+                <span class="profile-row-value">男</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">登录账号</span>
+                <span class="profile-row-value">liuyang</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">员工状态</span>
+                <span class="profile-row-value" style="color:#22c55e">在职</span>
+              </div>
+            </div>
+
+            <!-- 我的团队 -->
+            <div class="profile-card">
+              <div class="profile-card-title">🏢 我的团队</div>
+              <div class="profile-row">
+                <span class="profile-row-label">团队编号</span>
+                <span class="profile-row-value">T-2024-001</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">团队名称</span>
+                <span class="profile-row-value">华东运维一组</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">班组长</span>
+                <span class="profile-row-value">张伟</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">联系电话</span>
+                <span class="profile-row-value">138****1234</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-row-label">团队人数</span>
+                <span class="profile-row-value">8人</span>
+              </div>
+            </div>
+
+            <!-- 团队成员 -->
+            <div class="profile-card">
+              <div class="profile-card-title">👥 团队成员（8人）</div>
+              <div class="member-card">
+                <div class="member-avatar">张</div>
+                <div class="member-info">
+                  <div class="member-name">张伟 <span class="member-tag leader">班组长</span></div>
+                  <div class="member-meta">138****1234 · 在职</div>
+                </div>
+                <span class="member-tag online">在岗</span>
+              </div>
+              <div class="member-card">
+                <div class="member-avatar">王</div>
+                <div class="member-info">
+                  <div class="member-name">王芳</div>
+                  <div class="member-meta">138****2345 · 在职</div>
+                </div>
+                <span class="member-tag online">在岗</span>
+              </div>
+              <div class="member-card">
+                <div class="member-avatar" style="background:#dbeafe;color:#2563eb">刘</div>
+                <div class="member-info">
+                  <div class="member-name">刘洋 <span class="member-tag" style="background:#fef3c7;color:#d97706">我</span></div>
+                  <div class="member-meta">137****6789 · 在职</div>
+                </div>
+                <span class="member-tag online">在岗</span>
+              </div>
+              <div class="member-card">
+                <div class="member-avatar">周</div>
+                <div class="member-info">
+                  <div class="member-name">周建国</div>
+                  <div class="member-meta">139****8888 · 在职</div>
+                </div>
+                <span class="member-tag" style="background:#f3f4f6;color:#6b7280">外勤</span>
+              </div>
+              <div class="member-card">
+                <div class="member-avatar">吴</div>
+                <div class="member-info">
+                  <div class="member-name">吴海涛</div>
+                  <div class="member-meta">136****4321 · 在职</div>
+                </div>
+                <span class="member-tag online">在岗</span>
+              </div>
+              <div style="text-align:center;padding:8px 0;color:var(--text-secondary);font-size:12px;cursor:pointer;">
+                查看全部 8 名成员 →
+              </div>
+            </div>
+
+            <!-- 功能操作 -->
+            <div class="profile-action" id="btnChangePwd">
+              <div class="profile-action-icon" style="background:#fef3c7;">🔒</div>
+              <div class="profile-action-text">修改密码</div>
+              <div class="profile-action-arrow">›</div>
+            </div>
+            <div class="profile-action">
+              <div class="profile-action-icon" style="background:#dbeafe;">📊</div>
+              <div class="profile-action-text">我的考勤记录</div>
+              <div class="profile-action-arrow">›</div>
+            </div>
+            <div class="profile-action">
+              <div class="profile-action-icon" style="background:#dcfce7;">📝</div>
+              <div class="profile-action-text">我的日报记录</div>
+              <div class="profile-action-arrow">›</div>
+            </div>
+
+            <div style="height:20px"></div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Tab Bar -->
+
+          
+
+        <div class="tab-bar">
+          <div class="tab-bar-item active" data-tab="0">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">打卡</span>
+          </div>
+          <div class="tab-bar-item" data-tab="1">
+            <span class="tab-icon">📝</span>
+            <span class="tab-label">日报</span>
+          </div>
+          <div class="tab-bar-item" data-tab="2">
+            <span class="tab-icon">📦</span>
+            <span class="tab-label">订单</span>
+          </div>
+          <div class="tab-bar-item" data-tab="3">
+            <span class="tab-icon">👤</span>
+            <span class="tab-label">我的</span>
+          </div>
+        </div>
+
+        <!-- Modal: 订单响应 -->
+        <div class="modal-overlay" id="orderModal">
+          <div class="modal-panel">
+            <h3>订单响应</h3>
+            <div class="modal-desc">请确认是否愿意承接此订单，甲方将从意向团队中选择一家进行正式派单</div>
+            <div class="modal-switch">
+              <div class="modal-switch-btn" id="modalAccept">愿意接单</div>
+              <div class="modal-switch-btn" id="modalReject">暂不接单</div>
+            </div>
+            <div class="modal-extra-fields" id="modalExtra">
+              <div class="form-row">
+                <div class="form-label">预计投入人数</div>
+                <div class="number-input-wrap">
+                  <div class="num-btn" id="modalMinus">−</div>
+                  <input class="num-val" type="text" value="5" id="modalPeople">
+                  <div class="num-btn" id="modalPlus">+</div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top:12px;">
+                <div class="form-label">预计开始时间</div>
+                <input class="form-input" type="text" value="2026-08-01">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">备注</div>
+              <textarea class="form-input" placeholder="补充说明（选填）" rows="2"></textarea>
+            </div>
+            <button class="modal-submit-btn" id="modalSubmitBtn">提交响应</button>
+            <div class="modal-close" id="modalClose">取消</div>
+          </div>
+        </div>
+
+        <!-- Success Toast -->
+        <div class="success-toast" id="successToast">
+          <div class="toast-icon">✅</div>
+          <div class="toast-text">打卡成功！</div>
+        </div>
+
+        <!-- Draft Toast -->
+        <div class="draft-toast" id="draftToast">已保存到本地，将在网络恢复时自动提交</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===========================
+// Global State
+// ===========================
+let currentTab = 0;
+let clockType = 'start'; // start | end
+let startClockDone = false;
+let endClockDone = false;
+let photoTaken = false;
+let netStatus = 'online'; // online | weak
+
+// ===========================
+// Tab Switching
+// ===========================
+const tabPages = document.querySelectorAll('.tab-page');
+const tabBarItems = document.querySelectorAll('.tab-bar-item');
+const navListItems = document.querySelectorAll('.nav-list li');
+
+function switchTab(idx) {
+  currentTab = idx;
+  tabPages.forEach((p,i) => p.classList.toggle('active', i===idx));
+  tabBarItems.forEach((b,i) => b.classList.toggle('active', i===idx));
+  navListItems.forEach((n,i) => n.classList.toggle('active', i===idx));
+}
+
+tabBarItems.forEach(b => b.addEventListener('click', () => switchTab(+b.dataset.tab)));
+navListItems.forEach(n => n.addEventListener('click', () => switchTab(+n.dataset.tab)));
+
+// ===========================
+// Live Clock
+// ===========================
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('liveTime').textContent = `${h}:${m}:${s}`;
+
+  const days = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const y = now.getFullYear();
+  const mo = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  document.getElementById('liveDate').textContent = `${y}年${mo}月${d}日 ${days[now.getDay()]}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ===========================
+// Attendance - Type Switch
+// ===========================
+document.querySelectorAll('.att-type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.att-type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    clockType = btn.dataset.type;
+    updateClockinBtn();
+  });
+});
+
+function updateClockinBtn() {
+  const btn = document.getElementById('clockinBtn');
+  const label = document.getElementById('clockinLabel');
+  const isDone = clockType === 'start' ? startClockDone : endClockDone;
+  if (isDone) {
+    btn.classList.add('done');
+    label.textContent = '已打卡';
+  } else {
+    btn.classList.remove('done');
+    label.textContent = '打卡';
+  }
+}
+
+// ===========================
+// Attendance - Camera
+// ===========================
+document.getElementById('cameraBtn').addEventListener('click', () => {
+  photoTaken = true;
+  document.getElementById('cameraBtn').style.display = 'none';
+  document.getElementById('photoPreview').classList.add('show');
+});
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  photoTaken = false;
+  document.getElementById('cameraBtn').style.display = '';
+  document.getElementById('photoPreview').classList.remove('show');
+});
+
+// ===========================
+// Attendance - Clock In
+// ===========================
+document.getElementById('clockinBtn').addEventListener('click', () => {
+  if (clockType === 'start' && !startClockDone) {
+    startClockDone = true;
+    const now = new Date();
+    const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('recStart').textContent = `${t} ✅ 已打卡`;
+    document.getElementById('recStart').classList.remove('pending');
+    document.getElementById('recStart').classList.add('done');
+    showToast('打卡成功！');
+    updateClockinBtn();
+  } else if (clockType === 'end' && !endClockDone) {
+    endClockDone = true;
+    const now = new Date();
+    const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('recEnd').textContent = `${t} ✅ 已打卡`;
+    document.getElementById('recEnd').classList.remove('pending');
+    document.getElementById('recEnd').classList.add('done');
+    showToast('打卡成功！');
+    updateClockinBtn();
+    // Update daily page
+    document.getElementById('dailyEnd').textContent = t;
+    document.getElementById('dailyEnd').classList.remove('warn');
+    document.getElementById('dailyEnd').classList.add('');
+    document.getElementById('dailyHours').textContent = '9小时33分钟';
+  }
+});
+
+function showToast(text) {
+  const toast = document.getElementById('successToast');
+  toast.querySelector('.toast-text').textContent = text;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1500);
+}
+
+// ===========================
+// Attendance - Relocate
+// ===========================
+document.getElementById('relocBtn').addEventListener('click', () => {
+  const el = document.getElementById('relocBtn');
+  el.textContent = '⏳ 定位中...';
+  setTimeout(() => { el.textContent = '🔄 重新定位'; }, 1000);
+});
+
+// ===========================
+// Attendance - Network Toggle (double click to toggle)
+// ===========================
+document.getElementById('netBar').addEventListener('click', () => {
+  const bar = document.getElementById('netBar');
+  if (bar.classList.contains('online')) {
+    bar.classList.remove('online');
+    bar.classList.add('weak');
+    bar.innerHTML = '<span>🟡</span> 信号较弱，数据将在恢复网络后自动提交';
+  } else {
+    bar.classList.remove('weak');
+    bar.classList.add('online');
+    bar.innerHTML = '<span>🟢</span> 网络正常，数据实时同步';
+  }
+});
+
+// ===========================
+// Daily Report - Radio Group
+// ===========================
+document.getElementById('attendanceType').addEventListener('click', (e) => {
+  if (e.target.classList.contains('radio-item')) {
+    document.querySelectorAll('#attendanceType .radio-item').forEach(r => r.classList.remove('active'));
+    e.target.classList.add('active');
+  }
+});
+
+// ===========================
+// Daily Report - Number Input
+// ===========================
+document.querySelectorAll('.number-input-wrap').forEach(wrap => {
+  const input = wrap.querySelector('.num-val');
+  const minusBtn = wrap.querySelector('[data-op="minus"]');
+  const plusBtn = wrap.querySelector('[data-op="plus"]');
+  if (minusBtn) {
+    minusBtn.addEventListener('click', () => {
+      let v = parseInt(input.value) || 0;
+      if (v > 0) input.value = v - 1;
+    });
+  }
+  if (plusBtn) {
+    plusBtn.addEventListener('click', () => {
+      let v = parseInt(input.value) || 0;
+      input.value = v + 1;
+    });
+  }
+});
+
+// ===========================
+// Daily Report - Weak Net Banner
+// ===========================
+document.getElementById('weakNetBanner').addEventListener('click', () => {
+  document.getElementById('weakNetBanner').classList.add('hidden');
+});
+
+// ===========================
+// Daily Report - Save Draft
+// ===========================
+document.getElementById('btnDraft').addEventListener('click', () => {
+  const toast = document.getElementById('draftToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+});
+
+// ===========================
+// Daily Report - Submit
+// ===========================
+document.getElementById('btnSubmit').addEventListener('click', () => {
+  showToast('日报提交成功！');
+});
+
+// ===========================
+// Orders - Data
+// ===========================
+const orders = [
+  { code:'TK-2026-001', name:'风机叶片巡检', desc:'华东A风场6台风机年度叶片巡检', start:'2026-08-01', end:'2026-09-30', days:61, amount:'¥185,000', status:'pending', dispatch:'2026-07-10', respond:'' },
+  { code:'TK-2026-002', name:'齿轮箱维护', desc:'华北B风场齿轮箱季度保养', start:'2026-08-15', end:'2026-10-15', days:62, amount:'¥220,000', status:'accepted', dispatch:'2026-07-08', respond:'2026-07-09' },
+  { code:'TK-2026-003', name:'塔筒防腐', desc:'西北C风场塔筒防腐处理', start:'2026-09-01', end:'2026-11-30', days:91, amount:'¥350,000', status:'pending', dispatch:'2026-07-12', respond:'' },
+  { code:'TK-2026-004', name:'控制系统升级', desc:'华南D风场主控系统V3.0升级', start:'2026-07-20', end:'2026-08-20', days:32, amount:'¥128,000', status:'rejected', dispatch:'2026-07-05', respond:'2026-07-06' },
+  { code:'TK-2026-005', name:'基础沉降监测', desc:'华东A风场基础沉降年度监测', start:'2026-10-01', end:'2026-12-31', days:92, amount:'¥96,000', status:'pending', dispatch:'2026-07-13', respond:'' }
+];
+
+let orderFilter = 'pending';
+
+function renderOrders() {
+  const list = document.getElementById('orderList');
+  let filtered = orders;
+  if (orderFilter === 'pending') filtered = orders.filter(o => o.status === 'pending');
+  else if (orderFilter === 'responded') filtered = orders.filter(o => o.status !== 'pending');
+
+  list.innerHTML = filtered.map((o, idx) => {
+    const statusLabel = o.status === 'pending' ? '未响应' : o.status === 'accepted' ? '已接单' : '未中标';
+    const statusClass = o.status === 'pending' ? 'pending' : o.status === 'accepted' ? 'accepted' : 'rejected';
+    const btnClass = o.status === 'pending' ? 'primary' : 'secondary';
+    const btnText = o.status === 'pending' ? '立即响应' : '查看详情';
+    return `
+      <div class="order-card" data-idx="${orders.indexOf(o)}" data-expanded="false">
+        <div class="order-card-head">
+          <span class="order-code">${o.code}</span>
+          <span class="order-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="order-item-name">${o.name}</div>
+        <div class="order-item-desc">${o.desc}</div>
+        <div class="order-info-grid">
+          <div class="order-info-cell"><div class="cell-label">计划开始</div><div class="cell-value">${o.start}</div></div>
+          <div class="order-info-cell"><div class="cell-label">计划完成</div><div class="cell-value">${o.end}</div></div>
+          <div class="order-info-cell"><div class="cell-label">计划工期</div><div class="cell-value">${o.days}天</div></div>
+          <div class="order-info-cell"><div class="cell-label">计划金额</div><div class="cell-value">${o.amount}</div></div>
+        </div>
+        <div class="order-dispatch-time">派单时间：${o.dispatch}${o.respond ? ' | 响应：'+o.respond : ''}</div>
+        <button class="order-action-btn ${btnClass}" ${o.status==='pending' ? `onclick="openOrderModal(event, ${orders.indexOf(o)})"` : `onclick="toggleOrderDetail(event)"`}>${btnText}</button>
+        <div class="order-detail-extra">
+          <div class="detail-row"><span class="dl">项点编号</span><span class="dv">${o.code}</span></div>
+          <div class="detail-row"><span class="dl">项点名称</span><span class="dv">${o.name}</span></div>
+          <div class="detail-row"><span class="dl">项点说明</span><span class="dv">${o.desc}</span></div>
+          <div class="detail-row"><span class="dl">计划工期</span><span class="dv">${o.start} ~ ${o.end}（${o.days}天）</span></div>
+          <div class="detail-row"><span class="dl">计划金额</span><span class="dv">${o.amount}</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Order Tab Filter
+document.querySelectorAll('.order-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    orderFilter = tab.dataset.filter;
+    renderOrders();
+  });
+});
+
+// Toggle detail
+function toggleOrderDetail(e) {
+  e.stopPropagation();
+  const card = e.target.closest('.order-card');
+  const extra = card.querySelector('.order-detail-extra');
+  extra.classList.toggle('show');
+}
+
+// ===========================
+// Order Modal
+// ===========================
+let modalOrderIdx = -1;
+let modalChoice = '';
+
+function openOrderModal(e, idx) {
+  e.stopPropagation();
+  modalOrderIdx = idx;
+  modalChoice = '';
+  document.getElementById('modalAccept').classList.remove('active','active-reject');
+  document.getElementById('modalReject').classList.remove('active','active-reject');
+  document.getElementById('modalExtra').classList.remove('show');
+  document.getElementById('orderModal').classList.add('show');
+}
+
+document.getElementById('modalAccept').addEventListener('click', () => {
+  modalChoice = 'accept';
+  document.getElementById('modalAccept').classList.add('active');
+  document.getElementById('modalReject').classList.remove('active');
+  document.getElementById('modalReject').classList.add('active-reject');
+  document.getElementById('modalExtra').classList.add('show');
+});
+
+document.getElementById('modalReject').addEventListener('click', () => {
+  modalChoice = 'reject';
+  document.getElementById('modalReject').classList.remove('active-reject');
+  document.getElementById('modalReject').classList.add('active');
+  document.getElementById('modalAccept').classList.remove('active');
+  document.getElementById('modalExtra').classList.remove('show');
+});
+
+document.getElementById('modalClose').addEventListener('click', () => {
+  document.getElementById('orderModal').classList.remove('show');
+});
+
+document.getElementById('modalSubmitBtn').addEventListener('click', () => {
+  document.getElementById('orderModal').classList.remove('show');
+  if (modalChoice === 'accept') {
+    orders[modalOrderIdx].status = 'accepted';
+    const now = new Date();
+    orders[modalOrderIdx].respond = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  } else {
+    orders[modalOrderIdx].status = 'rejected';
+    const now = new Date();
+    orders[modalOrderIdx].respond = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+  renderOrders();
+  showToast('响应已提交！');
+});
+
+// Modal number input
+document.getElementById('modalMinus').addEventListener('click', () => {
+  const input = document.getElementById('modalPeople');
+  let v = parseInt(input.value) || 0;
+  if (v > 1) input.value = v - 1;
+});
+document.getElementById('modalPlus').addEventListener('click', () => {
+  const input = document.getElementById('modalPeople');
+  let v = parseInt(input.value) || 0;
+  input.value = v + 1;
+});
+
+// Init
+renderOrders();
+</script>
+</body>
+</html>
