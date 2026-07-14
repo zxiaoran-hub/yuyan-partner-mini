@@ -193,179 +193,183 @@ body {
 .tab-bar-item.active { color: var(--primary); }
 
 /* ===================== */
-/* TAB 1: 考勤打卡        */
-/* ===================== */
-.attendance-page { padding: 16px; }
-.att-time-block {
-  text-align: center;
-  padding: 24px 0 16px;
+/* TAB 1: 安全排查 */
+.safe-header {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff;
+  padding: 20px 16px 16px;
+  border-radius: 0 0 20px 20px;
 }
-.att-time-block .time-display {
-  font-size: 56px;
-  font-weight: 200;
-  color: var(--text);
-  letter-spacing: 2px;
-  font-variant-numeric: tabular-nums;
-}
-.att-time-block .date-display {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-top: 4px;
-}
-.att-type-switch {
+.safe-header h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.safe-header p { font-size: 12px; opacity: 0.85; }
+
+.safe-stats {
   display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.att-type-btn {
-  flex: 1;
+  gap: 8px;
   padding: 12px;
-  border-radius: var(--radius);
+  margin-top: -8px;
+}
+.safe-stat-card {
+  flex: 1;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 10px;
   text-align: center;
+  border: 1px solid var(--border);
+}
+.safe-stat-num { font-size: 20px; font-weight: 700; color: var(--primary); }
+.safe-stat-num.warn { color: var(--warning); }
+.safe-stat-num.danger { color: var(--danger); }
+.safe-stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+.safe-section {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  margin: 0 12px 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.safe-section-title {
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
-  border: 2px solid var(--border);
-  background: var(--card);
-  color: var(--text-secondary);
-  transition: all .2s;
-}
-.att-type-btn.active {
-  border-color: var(--primary);
-  background: var(--primary-light);
-  color: var(--primary);
-}
-.location-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow);
-}
-.location-card .loc-label {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.location-card .loc-address {
-  font-size: 14px;
-  font-weight: 500;
   color: var(--text);
-  margin-bottom: 8px;
-}
-.location-card .reloc-btn {
-  font-size: 12px;
-  color: var(--primary);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.camera-section {
-  text-align: center;
-  margin-bottom: 16px;
-}
-.camera-btn {
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  background: var(--card);
-  border: 3px solid var(--border);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 32px;
-  transition: all .2s;
-  color: var(--text-secondary);
-}
-.camera-btn:hover { border-color: var(--primary); color: var(--primary); }
-.camera-hint {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-top: 8px;
-}
-.photo-preview {
-  display: none;
-  margin-top: 10px;
-}
-.photo-preview.show { display: block; }
-.photo-preview .photo-thumb {
-  width: 200px; height: 140px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 13px;
-  position: relative;
-  overflow: hidden;
-}
-.photo-preview .photo-thumb::after {
-  content: '📷 现场照片';
-  font-size: 14px;
-}
-.photo-preview .retake-btn {
-  font-size: 12px;
-  color: var(--danger);
-  cursor: pointer;
-  margin-top: 6px;
-  display: inline-block;
-}
-.clockin-btn-wrap {
-  text-align: center;
-  margin: 20px 0;
-}
-.clockin-btn {
-  width: 140px; height: 140px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  border: none;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 6px 24px rgba(37,99,235,0.4);
-  transition: all .2s;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-.clockin-btn:active { transform: scale(0.95); }
-.clockin-btn .clock-icon { font-size: 28px; }
-.clockin-btn.done {
-  background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
-  box-shadow: 0 6px 24px rgba(34,197,94,0.4);
-}
-.att-records {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
   margin-bottom: 12px;
-}
-.att-records h4 {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
-.att-record-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
+}
+
+.safe-farm-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--card);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
 }
-.att-record-item:last-child { border-bottom: none; }
-.att-record-item .rec-label { font-size: 14px; color: var(--text); }
-.att-record-item .rec-value { font-size: 14px; }
-.att-record-item .rec-value.done { color: var(--success); font-weight: 500; }
-.att-record-item .rec-value.pending { color: var(--text-tertiary); }
+.check-item:last-child { border-bottom: none; }
+.check-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.check-box.checked {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+.check-box.no-pass {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.check-text { flex: 1; font-size: 13px; color: var(--text); }
+.check-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.check-tag.pass { background: #dcfce7; color: #16a34a; }
+.check-tag.fail { background: #fef2f2; color: #dc2626; }
+.check-tag.na { background: #f3f4f6; color: #6b7280; }
+
+.issue-card {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-top: 8px;
+}
+.issue-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.issue-title { font-size: 13px; font-weight: 600; color: #dc2626; }
+.issue-level {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.issue-level.high { background: #dc2626; color: #fff; }
+.issue-level.medium { background: #f59e0b; color: #fff; }
+.issue-level.low { background: #3b82f6; color: #fff; }
+.issue-desc { font-size: 12px; color: #7f1d1d; margin-bottom: 6px; }
+.issue-photo {
+  display: flex;
+  gap: 6px;
+}
+.issue-photo-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #fca5a5, #fecaca);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.safe-photo-area {
+  text-align: center;
+  padding: 16px 0 8px;
+}
+.safe-photo-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), #1d4ed8);
+  color: #fff;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.safe-photo-btn:active { transform: scale(0.95); }
+.safe-photo-hint { font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
+
+.safe-history-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.safe-history-item:last-child { border-bottom: none; }
+.safe-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.safe-history-farm { font-size: 13px; font-weight: 500; color: var(--text); }
+.safe-history-date { font-size: 11px; color: var(--text-secondary); }
+.safe-history-summary { font-size: 12px; color: var(--text-secondary); }
+.safe-history-summary .pass-count { color: var(--success); font-weight: 500; }
+.safe-history-summary .fail-count { color: var(--danger); font-weight: 500; }
 .offline-bar {
   border-radius: var(--radius-sm);
   padding: 10px 14px;
@@ -929,12 +933,12 @@ textarea.form-input { resize: none; min-height: 60px; }
         <div style="font-size:12px;color:var(--text-secondary);">合作方运维任务小程序</div>
       </div>
     </div>
-    <p class="subtitle">面向风电运维合作方（乙方）的手机端小程序，支持考勤打卡、日报提交、外包订单响应、个人中心等核心操作。针对风场信号差的场景，提供离线暂存等友好提示。</p>
+    <p class="subtitle">面向风电运维合作方（乙方）的手机端小程序，支持安全排查、日报提交、外包订单响应、个人中心等核心操作。针对风场信号差的场景，提供离线暂存等友好提示。</p>
     <ul class="nav-list">
       <li class="active" data-tab="0">
         <div class="nav-tab-num">Tab 1 · 页面3-1</div>
-        <div class="nav-title">📋 考勤打卡</div>
-        <div class="nav-desc">GPS定位+现场拍照+打卡记录，支持离线暂存</div>
+        <div class="nav-title">🔍 安全排查</div>
+        <div class="nav-desc">风场安全隐患排查+拍照记录+整改跟踪</div>
       </li>
       <li data-tab="1">
         <div class="nav-tab-num">Tab 2 · 页面3-2</div>
@@ -967,55 +971,145 @@ textarea.form-input { resize: none; min-height: 60px; }
         <!-- Tab Content Area -->
         <div class="tab-content-area">
 
-          <!-- ========== TAB 1: 考勤打卡 ========== -->
+          <!-- ========== TAB 1: 安全排查 ========== -->
           <div class="tab-page active" id="page-attendance">
-            <div class="attendance-page">
-              <div class="att-time-block">
-                <div class="time-display" id="liveTime">08:00:00</div>
-                <div class="date-display" id="liveDate">2026年07月14日 星期二</div>
-              </div>
+            <div class="safe-header">
+              <h2>🔍 安全排查</h2>
+              <p>风场现场安全隐患排查与记录</p>
+            </div>
 
-              <div class="att-type-switch">
-                <div class="att-type-btn active" data-type="start">上班打卡</div>
-                <div class="att-type-btn" data-type="end">下班打卡</div>
+            <div class="safe-stats">
+              <div class="safe-stat-card">
+                <div class="safe-stat-num">12</div>
+                <div class="safe-stat-label">本月排查次数</div>
               </div>
-
-              <div class="location-card">
-                <div class="loc-label">📍 当前位置</div>
-                <div class="loc-address">江苏省盐城市大丰区华东海上风电场A</div>
-                <div class="reloc-btn" id="relocBtn">🔄 重新定位</div>
+              <div class="safe-stat-card">
+                <div class="safe-stat-num warn">3</div>
+                <div class="safe-stat-label">待整改项</div>
               </div>
+              <div class="safe-stat-card">
+                <div class="safe-stat-num danger">1</div>
+                <div class="safe-stat-label">高危隐患</div>
+              </div>
+            </div>
 
-              <div class="camera-section">
-                <div class="camera-btn" id="cameraBtn">📷</div>
-                <div class="camera-hint">现场拍照作为考勤凭证</div>
-                <div class="photo-preview" id="photoPreview">
-                  <div class="photo-thumb"></div>
-                  <div><span class="retake-btn" id="retakeBtn">✕ 删除重拍</span></div>
+            <!-- 选择风场 -->
+            <div class="safe-section">
+              <div class="safe-section-title">📍 排查风场</div>
+              <select class="safe-farm-select">
+                <option>华东海上风电场A - #3机组</option>
+                <option>华东海上风电场A - #5机组</option>
+                <option>华北陆上风电场B</option>
+                <option>西北风电场C</option>
+              </select>
+            </div>
+
+            <!-- 排查项目 -->
+            <div class="safe-section">
+              <div class="safe-section-title">📋 排查项目</div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box checked">✓</div>
+                <div class="check-text">塔基螺栓紧固状态</div>
+                <span class="check-tag pass">正常</span>
+              </div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box checked">✓</div>
+                <div class="check-text">机舱外部防护完好</div>
+                <span class="check-tag pass">正常</span>
+              </div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box no-pass">✕</div>
+                <div class="check-text">叶片表面损伤检查</div>
+                <span class="check-tag fail">异常</span>
+              </div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box no-pass">✕</div>
+                <div class="check-text">塔筒防腐层状况</div>
+                <span class="check-tag fail">异常</span>
+              </div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box checked">✓</div>
+                <div class="check-text">接地电阻测试</div>
+                <span class="check-tag pass">正常</span>
+              </div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box checked">✓</div>
+                <div class="check-text">消防设施完好</div>
+                <span class="check-tag pass">正常</span>
+              </div>
+              <div class="check-item" onclick="toggleCheck(this)">
+                <div class="check-box checked">✓</div>
+                <div class="check-text">安全警示标识完好</div>
+                <span class="check-tag pass">正常</span>
+              </div>
+            </div>
+
+            <!-- 发现的隐患 -->
+            <div class="safe-section">
+              <div class="safe-section-title">⚠️ 发现的隐患</div>
+
+              <div class="issue-card">
+                <div class="issue-card-header">
+                  <span class="issue-title">叶片前缘腐蚀</span>
+                  <span class="issue-level high">高危</span>
+                </div>
+                <div class="issue-desc">#3机组B叶片前缘约30cm区域出现腐蚀剥落，需尽快安排修复</div>
+                <div class="issue-photo">
+                  <div class="issue-photo-thumb">📷</div>
+                  <div class="issue-photo-thumb">📷</div>
                 </div>
               </div>
 
-              <div class="clockin-btn-wrap">
-                <button class="clockin-btn" id="clockinBtn">
-                  <span class="clock-icon">✓</span>
-                  <span id="clockinLabel">打卡</span>
-                </button>
-              </div>
-
-              <div class="att-records">
-                <h4>今日打卡记录</h4>
-                <div class="att-record-item">
-                  <span class="rec-label">上班打卡</span>
-                  <span class="rec-value pending" id="recStart">--:-- 未打卡</span>
+              <div class="issue-card" style="background:#fffbeb;border-color:#fde68a;margin-top:10px;">
+                <div class="issue-card-header">
+                  <span class="issue-title" style="color:#d97706">塔筒底部漆面起泡</span>
+                  <span class="issue-level medium">中危</span>
                 </div>
-                <div class="att-record-item">
-                  <span class="rec-label">下班打卡</span>
-                  <span class="rec-value pending" id="recEnd">--:-- 未打卡</span>
+                <div class="issue-desc" style="color:#78350f">塔筒底部2米范围内防腐漆面出现起泡，面积约0.5㎡</div>
+                <div class="issue-photo">
+                  <div class="issue-photo-thumb" style="background:linear-gradient(135deg,#fde68a,#fef3c7)">📷</div>
                 </div>
               </div>
+            </div>
 
-              <div class="offline-bar online" id="netBar">
-                <span>🟢</span> 网络正常，数据实时同步
+            <!-- 拍照记录 -->
+            <div class="safe-section">
+              <div class="safe-section-title">📷 现场拍照</div>
+              <div class="safe-photo-area">
+                <button class="safe-photo-btn">📷</button>
+                <div class="safe-photo-hint">点击拍照记录安全隐患</div>
+              </div>
+            </div>
+
+            <!-- 提交按钮 -->
+            <div style="padding:4px 12px 8px;">
+              <button class="btn-submit" style="background:linear-gradient(135deg,#059669,#047857);">提交排查记录</button>
+              <button class="btn-draft" style="margin-top:8px;width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;cursor:pointer;">保存草稿（离线可用）</button>
+            </div>
+
+            <!-- 历史排查记录 -->
+            <div class="safe-section" style="margin-bottom:20px;">
+              <div class="safe-section-title">📜 近期排查记录</div>
+              <div class="safe-history-item">
+                <div class="safe-history-top">
+                  <span class="safe-history-farm">华东A · #3机组</span>
+                  <span class="safe-history-date">2026-07-12</span>
+                </div>
+                <div class="safe-history-summary">检查7项 · <span class="pass-count">5项正常</span> · <span class="fail-count">2项异常</span></div>
+              </div>
+              <div class="safe-history-item">
+                <div class="safe-history-top">
+                  <span class="safe-history-farm">华东A · #5机组</span>
+                  <span class="safe-history-date">2026-07-10</span>
+                </div>
+                <div class="safe-history-summary">检查7项 · <span class="pass-count">7项正常</span></div>
+              </div>
+              <div class="safe-history-item">
+                <div class="safe-history-top">
+                  <span class="safe-history-farm">华北B · #1机组</span>
+                  <span class="safe-history-date">2026-07-08</span>
+                </div>
+                <div class="safe-history-summary">检查7项 · <span class="pass-count">6项正常</span> · <span class="fail-count">1项异常</span></div>
               </div>
             </div>
           </div>
@@ -1266,8 +1360,8 @@ textarea.form-input { resize: none; min-height: 60px; }
 
         <div class="tab-bar">
           <div class="tab-bar-item active" data-tab="0">
-            <span class="tab-icon">📋</span>
-            <span class="tab-label">打卡</span>
+            <span class="tab-icon">🔍</span>
+            <span class="tab-label">排查</span>
           </div>
           <div class="tab-bar-item" data-tab="1">
             <span class="tab-icon">📝</span>
@@ -1318,7 +1412,7 @@ textarea.form-input { resize: none; min-height: 60px; }
         <!-- Success Toast -->
         <div class="success-toast" id="successToast">
           <div class="toast-icon">✅</div>
-          <div class="toast-text">打卡成功！</div>
+          <div class="toast-text" id="toastMsg">提交成功</div>
         </div>
 
         <!-- Draft Toast -->
@@ -1394,10 +1488,10 @@ function updateClockinBtn() {
   const isDone = clockType === 'start' ? startClockDone : endClockDone;
   if (isDone) {
     btn.classList.add('done');
-    label.textContent = '已打卡';
+    
   } else {
     btn.classList.remove('done');
-    label.textContent = '打卡';
+    
   }
 }
 
@@ -1423,19 +1517,19 @@ document.getElementById('clockinBtn').addEventListener('click', () => {
     startClockDone = true;
     const now = new Date();
     const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    document.getElementById('recStart').textContent = `${t} ✅ 已打卡`;
+    
     document.getElementById('recStart').classList.remove('pending');
     document.getElementById('recStart').classList.add('done');
-    showToast('打卡成功！');
+    showToast('排查记录已保存 ✓');
     updateClockinBtn();
   } else if (clockType === 'end' && !endClockDone) {
     endClockDone = true;
     const now = new Date();
     const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    document.getElementById('recEnd').textContent = `${t} ✅ 已打卡`;
+    
     document.getElementById('recEnd').classList.remove('pending');
     document.getElementById('recEnd').classList.add('done');
-    showToast('打卡成功！');
+    showToast('排查记录已保存 ✓');
     updateClockinBtn();
     // Update daily page
     document.getElementById('dailyEnd').textContent = t;
